@@ -1,0 +1,18 @@
+{
+    "name": "Omnix.EditorGroups.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:4860b2c10d41b4f46a4c10d02018cee4"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
