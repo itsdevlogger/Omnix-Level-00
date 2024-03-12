@@ -11,7 +11,7 @@ namespace Omnix.DesignPatterns
             if (Instance == null)
             {
                 Instance = this as T;
-                DontDestroyOnLoad(Instance);
+                DontDestroyOnLoad(gameObject);
             }
             else
             {
