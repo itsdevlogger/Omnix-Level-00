@@ -472,6 +472,8 @@ GameObject:
   - component: {fileID: 983800456}
   - component: {fileID: 983800455}
   - component: {fileID: 983800454}
+  - component: {fileID: 983800461}
+  - component: {fileID: 983800460}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -492,20 +494,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _notification:
+    type: 0
     title: Boom
     details: Youve found the cube, well done. No Can you move???
-    autohideDuration: 2
-    type: 0
+    themeIndex: 0
+    autohideDuration: -1
     okayButton:
-      callback:
+      <Text>k__BackingField: Okay
+      <IsActive>k__BackingField: 1
+      onClick:
         m_PersistentCalls:
           m_Calls: []
     noButton:
-      callback:
+      <Text>k__BackingField: No
+      <IsActive>k__BackingField: 0
+      onClick:
         m_PersistentCalls:
           m_Calls: []
     cancelButton:
-      callback:
+      <Text>k__BackingField: Cancel
+      <IsActive>k__BackingField: 0
+      onClick:
         m_PersistentCalls:
           m_Calls: []
 --- !u!114 &983800455
@@ -608,6 +617,32 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &983800460
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 983800453}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86a0fd46144841b7a19308d960184dc8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &983800461
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 983800453}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c0dfa03743c40beb63784b6c3817a3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  actions:
+  - {fileID: 983800460}
 --- !u!1 &1028513131
 GameObject:
   m_ObjectHideFlags: 0
