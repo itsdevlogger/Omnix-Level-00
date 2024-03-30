@@ -10,6 +10,7 @@ namespace Omnix.Utils.EditorUtils
         private static int miniButtonCount;
         private static GUIStyle buttonLeftAligned;
         private static GUIStyle buttonCenterAligned;
+        private static GUILayoutOption[] headerButtonOptions;
 
         private static float LineHeight => EditorGUIUtility.singleLineHeight;
         private static float MiniButtonWidth => LineHeight * 2f;
@@ -47,6 +48,21 @@ namespace Omnix.Utils.EditorUtils
             }
         }
 
+        public static bool HeaderButton(string text)
+        {
+            if (headerButtonOptions == null)
+            {
+                headerButtonOptions = new[] { GUILayout.Width(EditorGUIUtility.currentViewWidth * 0.5f), GUILayout.Height(EditorGUIUtility.singleLineHeight * 1.5f) };
+            }
+            
+            EditorGUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+            bool isClicked = GUILayout.Button(text, headerButtonOptions);
+            GUILayout.FlexibleSpace();
+            EditorGUILayout.EndHorizontal();
+            return isClicked;
+        }
+
         public static void BeginRow(int numberOfMiniButtons, float spaceBefore = 0f, float spaceAfter = 0f)
         {
             original = EditorGUILayout.GetControlRect(false, LineHeight + PaddingY);
@@ -77,7 +93,6 @@ namespace Omnix.Utils.EditorUtils
             current.width = MiniButtonWidth;
             return EditorGUI.ObjectField(current, obj, objType, allowSceneObjects);
         }
-
         
         public static bool BigButton(string text)
         {
@@ -99,6 +114,5 @@ namespace Omnix.Utils.EditorUtils
             current.width = BigButtonWidth;
             return EditorGUI.ObjectField(current, obj, objType, allowSceneObjects);
         }
-
     }
 }

@@ -8,34 +8,48 @@ namespace MenuManagement.Editor
 {
     public class BasePropertyGroupDrawer : List<SerializedProperty>
     {
-        private const string AllSetMessage = "";
-        private static readonly Color HeaderActiveGoodColor = new Color(1f, 1f, 1f, 0.75f);
-        private static readonly Color HeaderActiveBadColor = new Color(1f, 0f, 0f, 0.75f);
-        private static readonly Color HeaderInactiveGoodColor = new Color(1f, 1f, 1f, 0.25f);
-        private static readonly Color HeaderInactiveBadColor = new Color(1f, 0f, 0f, 0.25f);
-        
-        private readonly GUIContent headingContent;
+        private const string ALL_SET_MESSAGE = "";
+
+        public static class ActiveColors
+        {
+            public static readonly Color GOOD_BACKGROUND = new Color(1f, 1f, 1f, 0.75f);
+            public static readonly Color GOOD_CONTENT = Color.white;
+            public static readonly Color BAD_BACKGROUND = new Color(1f, 0f, 0f, 0.75f);
+            public static readonly Color BAD_CONTENT = new Color(1f, 0.6f, 0.64f);
+        }
+
+        public static class InactiveColors
+        {
+            public static readonly Color GOOD_BACKGROUND = new Color(1f, 1f, 1f, 0.25f);
+            public static readonly Color GOOD_CONTENT = new Color(1f, 1f, 1f, 0.75f);
+            public static readonly Color BAD_BACKGROUND = new Color(1f, 0f, 0f, 0.75f);
+            public static readonly Color BAD_CONTENT = new Color(1f, 0.6f, 0.64f, 0.76f);
+        }
+
+        private readonly GUIContent _headingContent;
         public bool isExpanded;
-        public string Tooltip;
+        public string tooltip;
+
         public string Title
         {
-            get => headingContent.text;
-            set => headingContent.text = value;
+            get => _headingContent.text;
+            set => _headingContent.text = value;
         }
+
         public bool IsEverythingGood { get; private set; }
 
         public BasePropertyGroupDrawer(string titleAndTooltip)
         {
-            _.SplitName(titleAndTooltip, out string myName, out Tooltip);
-            headingContent = new GUIContent(myName, AllSetMessage);
+            _.SplitName(titleAndTooltip, out string myName, out tooltip);
+            _headingContent = new GUIContent(myName, ALL_SET_MESSAGE);
             IsEverythingGood = true;
         }
-        
+
         public BasePropertyGroupDrawer(string title, string tooltip)
         {
             IsEverythingGood = true;
-            headingContent = new GUIContent(title, AllSetMessage);
-            Tooltip = tooltip;
+            _headingContent = new GUIContent(title, ALL_SET_MESSAGE);
+            this.tooltip = tooltip;
         }
 
         public void UpdateProps(string[] propNames, Dictionary<string, SerializedProperty> properties)
@@ -62,16 +76,15 @@ namespace MenuManagement.Editor
             if (string.IsNullOrEmpty(errorMessage))
             {
                 IsEverythingGood = true;
-                headingContent.tooltip = AllSetMessage;
+                _headingContent.tooltip = ALL_SET_MESSAGE;
             }
             else
             {
                 IsEverythingGood = false;
-                headingContent.tooltip = errorMessage;
+                _headingContent.tooltip = errorMessage;
             }
-            
         }
-        
+
         protected virtual void DrawGroup()
         {
             foreach (SerializedProperty property in this)
@@ -82,34 +95,50 @@ namespace MenuManagement.Editor
 
         private bool DrawHeader()
         {
-            if (isExpanded)
+            Color backgroundColor = GUI.backgroundColor;
+            Color contentColor = GUI.contentColor;
+            switch (isExpanded)
             {
-                GUI.color = IsEverythingGood ? HeaderActiveGoodColor : HeaderActiveBadColor;    
+                case true when IsEverythingGood:
+                    GUI.backgroundColor = ActiveColors.GOOD_BACKGROUND;
+                    GUI.contentColor = ActiveColors.GOOD_CONTENT;
+                    break;
+                case true when !IsEverythingGood:
+                    GUI.backgroundColor = ActiveColors.BAD_BACKGROUND;
+                    GUI.contentColor = ActiveColors.BAD_CONTENT;
+                    break;
+                case false when IsEverythingGood:
+                    GUI.backgroundColor = InactiveColors.GOOD_BACKGROUND;
+                    GUI.contentColor = InactiveColors.GOOD_CONTENT;
+                    break;
+                case false when !IsEverythingGood:
+                    GUI.backgroundColor = InactiveColors.BAD_BACKGROUND;
+                    GUI.contentColor = InactiveColors.BAD_CONTENT;
+                    break;
             }
-            else
-            {
-                GUI.color = IsEverythingGood ? HeaderInactiveGoodColor : HeaderInactiveBadColor;    
-            }
-            
-            EditorGUILayout.Space();
-            Rect rect = EditorGUILayout.GetControlRect(true, 20f);
+
+            GUILayout.Space(EditorGUIUtility.singleLineHeight * 0.25f);
+            Rect rect = EditorGUILayout.GetControlRect(false, EditorGUIUtility.singleLineHeight * 1.5f);
             rect.width += 10f;
             rect.x -= 10f;
 
-            if (GUI.Button(rect, headingContent))
+            if (GUI.Button(rect, _headingContent))
             {
-                GUI.color = Color.white;
+                GUI.backgroundColor = backgroundColor;
+                GUI.contentColor = contentColor;
                 return !isExpanded;
             }
 
-            if (isExpanded && string.IsNullOrEmpty(Tooltip) == false)
+            if (isExpanded && string.IsNullOrEmpty(tooltip) == false)
             {
                 rect = EditorGUILayout.GetControlRect(true, 20f);
                 rect.x += 5f;
-                GUI.color = new Color(0.58f, 1f, 0.98f, 0.51f);
-                EditorGUI.LabelField(rect, Tooltip);
+                GUI.contentColor = new Color(0.58f, 1f, 0.98f, 0.51f);
+                EditorGUI.LabelField(rect, tooltip);
             }
-            GUI.color = Color.white;
+
+            GUI.backgroundColor = backgroundColor;
+            GUI.contentColor = contentColor;
             return isExpanded;
         }
     }
