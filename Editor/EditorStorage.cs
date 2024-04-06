@@ -24,7 +24,7 @@ namespace ThemedUi
             INSTANCE = Resources.Load<T>(StorageName);
             if (INSTANCE != null) return;
 
-            string resourcesFolderPath = "Assets/Resources/";
+            string resourcesFolderPath = "Assets/Editor/Resources/";
             string storagePath = resourcesFolderPath + StorageName + ".asset";
             if (!Directory.Exists(resourcesFolderPath))
             {

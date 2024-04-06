@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Omnix.DesignPatterns
@@ -6,17 +7,27 @@ namespace Omnix.DesignPatterns
     {
         public static T Instance { get; private set; }
 
+        [Obsolete("Use Init Instead", true)]
         protected virtual void Awake()
         {
             if (Instance == null)
             {
                 Instance = this as T;
                 DontDestroyOnLoad(gameObject);
+                Init();
             }
             else
             {
                 Destroy(gameObject);
             }
+        }
+
+        /// <summary>
+        /// Awake but only called on the actual instance
+        /// </summary>
+        protected virtual void Init()
+        {
+            
         }
     }
     

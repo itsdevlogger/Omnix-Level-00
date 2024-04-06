@@ -1,5 +1,7 @@
+using System;
 using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Omnix.Utils.EditorUtils
 {
@@ -11,6 +13,7 @@ namespace Omnix.Utils.EditorUtils
         private static GUIStyle buttonLeftAligned;
         private static GUIStyle buttonCenterAligned;
         private static GUILayoutOption[] headerButtonOptions;
+        private static float lastHeaderWidth;
 
         private static float LineHeight => EditorGUIUtility.singleLineHeight;
         private static float MiniButtonWidth => LineHeight * 2f;
@@ -50,9 +53,10 @@ namespace Omnix.Utils.EditorUtils
 
         public static bool HeaderButton(string text)
         {
-            if (headerButtonOptions == null)
+            if (headerButtonOptions == null || Math.Abs(lastHeaderWidth - EditorGUIUtility.currentViewWidth) > 1f)
             {
-                headerButtonOptions = new[] { GUILayout.Width(EditorGUIUtility.currentViewWidth * 0.5f), GUILayout.Height(EditorGUIUtility.singleLineHeight * 1.5f) };
+                headerButtonOptions = new[] { GUILayout.Width(EditorGUIUtility.currentViewWidth * 0.7f), GUILayout.Height(EditorGUIUtility.singleLineHeight * 1.5f) };
+                lastHeaderWidth = EditorGUIUtility.currentViewWidth;
             }
             
             EditorGUILayout.BeginHorizontal();
