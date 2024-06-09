@@ -138,8 +138,8 @@ namespace Omnix.Editor
             Selection.objects = newSelection;
         }
 
-        [MenuItem(OBJECT_MENU + _.REPLACE_TEXT_WITH_TMP, false, 1001)]
-        [MenuItem(SELECT_MENU + _.REPLACE_TEXT_WITH_TMP, false, 1001)]
+        [MenuItem(OBJECT_MENU + _.REPLACE_TEXT_WITH_TMP, false, 1004)]
+        [MenuItem(SELECT_MENU + _.REPLACE_TEXT_WITH_TMP, false, 1004)]
         public static void ReplaceText()
         {
             if (TMP_Settings.defaultFontAsset == null)
@@ -151,13 +151,13 @@ namespace Omnix.Editor
             WrapInUndo("Convert Text to TextMeshPro", EditorMenuHelpers.ConvertAllTextToTextMeshPros);
         }
 
-        [MenuItem(MAIN_MENU + "Clear Player Prefs", false, 1000)]
+        [MenuItem(MAIN_MENU + "Clear Player Prefs", false, 1001)]
         public static void ClearPlayerPrefs()
         {
             PlayerPrefs.DeleteAll();
         }
 
-        [MenuItem(MAIN_MENU + "Clear Selections", false, 1001)]
+        [MenuItem(MAIN_MENU + "Clear Selections", false, 1002)]
         public static void ClearSelection()
         {
             Selection.activeGameObject = null;
@@ -165,7 +165,7 @@ namespace Omnix.Editor
             Selection.activeTransform = null;
         }
 
-        [MenuItem(MAIN_MENU + "Main Camera to Scene View", false, 1002)]
+        [MenuItem(MAIN_MENU + "Main Camera to Scene View", false, 1003)]
         public static void MainCameraToSceneView()
         {
             Transform sceneCam = EditorWindow.GetWindow<SceneView>().camera.transform;
@@ -183,7 +183,7 @@ namespace Omnix.Editor
             gameCam.localScale = sceneCam.localScale;
         }
 
-        [MenuItem(MAIN_MENU + "Toggle Inspector Lock _F3")] // F3 key. if you want to change hotkey: https://docs.unity3d.com/ScriptReference/MenuItem.html#:~:text=To%20create%20a,TAB%2C%20and%20SPACE.
+        [MenuItem(MAIN_MENU + "Toggle Inspector Lock _F3", false, 1004)] // F3 key. if you want to change hotkey: https://docs.unity3d.com/ScriptReference/MenuItem.html#:~:text=To%20create%20a,TAB%2C%20and%20SPACE.
         public static void ToggleInspectorLock()
         {
             ActiveEditorTracker.sharedTracker.isLocked = !ActiveEditorTracker.sharedTracker.isLocked;
