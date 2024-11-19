@@ -1,0 +1,18 @@
+{
+    "name": "InteractionSystem.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:268dd300b8a071944becf4b643f16b7a"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
