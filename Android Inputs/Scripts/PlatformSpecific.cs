@@ -33,12 +33,12 @@ public class PlatformSpecific : MonoBehaviour
     {
 #if UNITY_EDITOR
         return _platform != _testingPlatform;
-#elif UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX
+#elif UNITY_STANDALONE
         return _platform != Platform.PC;
 #elif UNITY_ANDROID || UNITY_IOS
         return _platform != Platform.Mobile;
 #else
-        return true; // Default to mismatch for unsupported platforms
+        return true;
 #endif
     }
 }

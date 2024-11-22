@@ -19,28 +19,36 @@ namespace InteractionSystem.Interactables
         [SerializeField] private bool _forceInteraction;
         [SerializeField] private bool _endWhenPlayerLeaves = true;
 
-
         private InteractionPlayer _player;
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.TryGetComponent(out _player))
+            if (!other.TryGetComponent(out _player))
+                return;
+
+            switch (_action)
             {
-                switch (_action)
-                {
-                    case ActionToTake.Focus:
-                        _player.SetFocus(gameObject, _forceInteraction);
-                        break;
-                    case ActionToTake.Interact:
-                        _player.StartInteraction(gameObject, _forceInteraction);
-                        break;
-                }
+                case ActionToTake.Focus:
+                    _player.SetFocus(gameObject, _forceInteraction);
+                    break;
+                case ActionToTake.Interact:
+                    _player.StartInteraction(gameObject, _forceInteraction);
+                    break;
             }
         }
 
         private void OnTriggerExit(Collider other)
         {
             if (!_endWhenPlayerLeaves || _player == null)
+                return;
+
+            if (_player.IsInteracting == false || _player.CurrentTarget.gameObject != gameObject)
+                return;
+
+            if (other.TryGetComponent(out InteractionPlayer otherPlayer) == false)
+                return;
+            
+            if (otherPlayer != _player) 
                 return;
             
             switch (_action)

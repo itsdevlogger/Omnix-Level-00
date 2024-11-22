@@ -11,7 +11,6 @@ namespace InteractionSystem.Interactables
     {
         public float cooldownTime;
         public bool isRealTime;
-
         public bool IsOnCooldown
         {
             get
@@ -24,21 +23,23 @@ namespace InteractionSystem.Interactables
         }
 
         private float _cooldownEndTime = -1;
+        private bool _isInteracting = false;
 
         public bool CanInteract(InteractionPlayer player)
         {
-            return !IsOnCooldown;
+            return !_isInteracting && !IsOnCooldown;
         }
 
         public void OnInteractionEnd(InteractionPlayer player)
         {
             _cooldownEndTime = isRealTime ? Time.unscaledTime : Time.time;
             _cooldownEndTime += cooldownTime;
+            _isInteracting = false;
         }
 
         public void OnInteractionStart(InteractionPlayer player)
         {
-            
+            _isInteracting = true;
         }
     }
 
