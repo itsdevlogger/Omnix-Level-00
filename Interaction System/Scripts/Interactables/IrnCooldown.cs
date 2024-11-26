@@ -6,7 +6,6 @@ using UnityEditor;
 namespace InteractionSystem.Interactables
 {
     [ComponentInfo("Blocks interaction for specified amount of time after previous interaction ends.")]
-    [RequireComponent(typeof(Collider))]
     public class IrnCooldown : MonoBehaviour, IInteractionProcessor, IInteractionCriteria
     {
         public float cooldownTime;
@@ -21,6 +20,10 @@ namespace InteractionSystem.Interactables
                 return _cooldownEndTime >= time;
             }
         }
+
+#if UNITY_EDITOR
+        [SerializeField, HideInInspector] public Component __EDITOR_ONLY_MANGED_BY__;
+#endif
 
         private float _cooldownEndTime = -1;
         private bool _isInteracting = false;
@@ -49,12 +52,19 @@ namespace InteractionSystem.Interactables
     {
         public override void OnInspectorGUI()
         {
-            DrawDefaultInspector();
-            IrnCooldown cooldownScript = (IrnCooldown)target;
-            if (cooldownScript.cooldownTime <= 0)
+            IrnCooldown cooldown = ((IrnCooldown)target);
+            bool isManaged = cooldown.__EDITOR_ONLY_MANGED_BY__ != null;
+            if (isManaged) 
             {
-                EditorGUILayout.HelpBox("Cooldown Timer must be greater than 0.", MessageType.Error);
+                GUI.enabled = false;
+                EditorGUILayout.ObjectField($"Managed by", cooldown.__EDITOR_ONLY_MANGED_BY__, typeof(Component));
+                EditorGUILayout.Space();
             }
+            DrawDefaultInspector();
+            
+            GUI.enabled = true;
+            if (!isManaged && cooldown.cooldownTime <= 0)
+                EditorGUILayout.HelpBox("Cooldown Timer less than or equal to 0 will be egnored.", MessageType.Warning);
         }
     }
 #endif

@@ -6,21 +6,18 @@ using UnityEditor;
 
 namespace InteractionSystem.Interactables
 {
-    [RequireComponent(typeof(Collider), typeof(IrnCooldown))]
+    [RequireComponent(typeof(IrnCooldown))]
     public class IrnDoor : MonoBehaviour, IInteractionProcessor
     {
-        [Header("Referances")]
-        [SerializeField] private Transform _target;
-        [SerializeField] private Transform _openPosition;
-        [SerializeField] private Transform _closePosition;
+        public Transform target;
+        public Transform openPosition;
+        public Transform closePosition;
 
-        [Header("Animation Settings")]
-        [SerializeField] private AnimationCurve _animationCurve;
-        [SerializeField] private float _animationDuration;
-        [SerializeField] private bool _copyPosition = false;
-        [SerializeField] private bool _copyRotation = false;
+        public AnimationCurve animationCurve;
+        public float animationDuration;
+        public bool copyPosition = false;
+        public bool copyRotation = false;
 
-        [Header("Other Settings")]
         [Tooltip("< 0 means door will stay open until interaction is ended, >= 0 means door will close automatically after that amount of time, and interaction will end instantly")]
         [SerializeField] private float _autocloseDelay;
         [SerializeField] private bool _isOpen = false;
@@ -32,10 +29,10 @@ namespace InteractionSystem.Interactables
 
         public float AnimationDuration
         {
-            get => _animationDuration;
+            get => animationDuration;
             set
             {
-                _animationDuration = value;
+                animationDuration = value;
                 UpdateCooldown();
             }
         }
@@ -53,38 +50,42 @@ namespace InteractionSystem.Interactables
         private void Start()
         {
             _cooldown = GetComponent<IrnCooldown>();
-            AnimationDuration = _animationDuration;
+            AnimationDuration = animationDuration;
 
             // Set initial state
-            Transform source = _isOpen ? _openPosition : _closePosition;
-            if (_copyPosition) _target.localPosition = source.localPosition;
-            if (_copyRotation) _target.localRotation = source.localRotation;
+            Transform source = _isOpen ? openPosition : closePosition;
+            if (copyPosition) target.localPosition = source.localPosition;
+            if (copyRotation) target.localRotation = source.localRotation;
         }
 
+#if UNITY_EDITOR
         private void Reset()
         {
-            _openPosition = new GameObject("Opened Position").transform;
-            _closePosition = new GameObject("Closed Position").transform;
-            _openPosition.SetParent(transform);
-            _closePosition.SetParent(transform);
-            _openPosition.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
-            _closePosition.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+            openPosition = new GameObject("Opened Position").transform;
+            closePosition = new GameObject("Closed Position").transform;
+            openPosition.SetParent(transform);
+            closePosition.SetParent(transform);
+            openPosition.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+            closePosition.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+
+            _cooldown = GetComponent<IrnCooldown>();
+            _cooldown.__EDITOR_ONLY_MANGED_BY__ = this;
         }
 
         private void OnValidate()
         {
-#if UNITY_EDITOR
             if (_cooldown ==  null) 
                 _cooldown = GetComponent<IrnCooldown>();
-
+            
+            _cooldown.__EDITOR_ONLY_MANGED_BY__ = this;
             UpdateCooldown();
             EditorUtility.SetDirty(_cooldown);
-#endif
         }
 
+#endif
         private void UpdateCooldown()
         {
-            if (IsAutoclose) _cooldown.cooldownTime = _animationDuration * 2f + _autocloseDelay;
+            if (IsAutoclose) _cooldown.cooldownTime = animationDuration * 2f + _autocloseDelay;
             else _cooldown.cooldownTime = 0f;
         }
 
@@ -130,27 +131,27 @@ namespace InteractionSystem.Interactables
             while (true)    // sh*t just got real yeh
             {
                 _isOpen = open;
-                Vector3 startPosition = _target.localPosition;
-                Quaternion startRotation = _target.localRotation;
-                Vector3 endPosition = open ? _openPosition.localPosition : _closePosition.localPosition;
-                Quaternion endRotation = open ? _openPosition.localRotation : _closePosition.localRotation;
+                Vector3 startPosition = target.localPosition;
+                Quaternion startRotation = target.localRotation;
+                Vector3 endPosition = open ? openPosition.localPosition : closePosition.localPosition;
+                Quaternion endRotation = open ? openPosition.localRotation : closePosition.localRotation;
 
                 float elapsedTime = 0f;
-                while (elapsedTime < _animationDuration)
+                while (elapsedTime < animationDuration)
                 {
-                    float t = elapsedTime / _animationDuration;
-                    float curveValue = _animationCurve.Evaluate(t);
+                    float t = elapsedTime / animationDuration;
+                    float curveValue = animationCurve.Evaluate(t);
 
-                    if (_copyPosition) _target.localPosition = Vector3.Lerp(startPosition, endPosition, curveValue);
-                    if (_copyRotation) _target.localRotation = Quaternion.Slerp(startRotation, endRotation, curveValue);
+                    if (copyPosition) target.localPosition = Vector3.Lerp(startPosition, endPosition, curveValue);
+                    if (copyRotation) target.localRotation = Quaternion.Slerp(startRotation, endRotation, curveValue);
 
                     elapsedTime += Time.deltaTime;
                     yield return null;
                 }
 
                 // Ensure final pos & rot
-                if (_copyPosition) _target.localPosition = endPosition;
-                if (_copyRotation) _target.localRotation = endRotation;
+                if (copyPosition) target.localPosition = endPosition;
+                if (copyRotation) target.localRotation = endRotation;
 
                 if (_isOpen != open)
                 {

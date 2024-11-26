@@ -6,7 +6,9 @@ namespace InteractionSystem
     public class InteractionPlayer : MonoBehaviour
     {
         [Header("Settings")]
-        [SerializeField] private LayerMask _layer;
+        [SerializeField] private LayerMask _interactableLayer;
+        [SerializeField, Tooltip("Player wont be able to interact with the object if the interactable is masked by an object on Opaque Layer.")] 
+        private LayerMask _opaqueLayer;
 
         [SerializeField, Tooltip("Maximum distance from which the player can start interaction")] 
         public float InteractionStartRange = 5f;
@@ -23,9 +25,16 @@ namespace InteractionSystem
         public bool IsInteracting { get; private set; } = false;
         public bool IsFocused { get; private set; } = false;
 
+#if UNITY_EDITOR
+        public bool editorOnlyLogIncorrectlySetupInteractions = true;
+        public static bool EditorOnlyLogIncorrectlySetupInteractions;
+#endif
+
+
         private void OnEnable()
         {
-            _raycastHandler = new RaycastHandler();
+            EditorOnlyLogIncorrectlySetupInteractions = editorOnlyLogIncorrectlySetupInteractions;
+            _raycastHandler = new RaycastHandler(_interactableLayer, _opaqueLayer, InteractionStartRange);
             _startInteractionAction.Enable();
             _endInteractionAction.Enable();
         }
@@ -50,7 +59,7 @@ namespace InteractionSystem
                 return;
             }
 
-            var hitAnything = _raycastHandler.DoRaycast(InteractionStartRange, _layer, CurrentTarget);
+            var hitAnything = _raycastHandler.DoRaycast(CurrentTarget);
             if (_raycastHandler.TargetChanged)
             {
                 ClearFocus();

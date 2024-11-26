@@ -152,10 +152,13 @@ namespace InteractionSystem
             if (h.Length == 0)
             {
 #if UNITY_EDITOR
-                var checks = target.GetComponents<IInteractionCriteria>();
-                var feedbacks = target.GetComponents<IInteractionFeedback>();
-                if (checks.Length > 0) Debug.LogError($"Game Object \"{target.name}\" has \"{nameof(IInteractionCriteria)}\" but no \"{nameof(IInteractionProcessor)}\". The object will be ignored.");
-                if (feedbacks.Length > 0) Debug.LogError($"Game Object \"{target.name}\" has \"{nameof(IInteractionFeedback)}\" but no \"{nameof(IInteractionProcessor)}\". The object will be ignored.");
+                if (InteractionPlayer.EditorOnlyLogIncorrectlySetupInteractions)
+                {
+                    var checks = target.GetComponents<IInteractionCriteria>();
+                    var feedbacks = target.GetComponents<IInteractionFeedback>();
+                    if (checks.Length > 0) Debug.LogError($"Game Object \"{target.name}\" has \"{nameof(IInteractionCriteria)}\" but no \"{nameof(IInteractionProcessor)}\". The object will be ignored.");
+                    if (feedbacks.Length > 0) Debug.LogError($"Game Object \"{target.name}\" has \"{nameof(IInteractionFeedback)}\" but no \"{nameof(IInteractionProcessor)}\". The object will be ignored.");
+                }
 #endif
                 interactionTarget = null;
                 return false;

@@ -1,4 +1,6 @@
-﻿using TMPro;
+﻿using System;
+using System.Collections;
+using TMPro;
 using UnityEngine;
 
 namespace InteractionSystem
@@ -12,9 +14,11 @@ namespace InteractionSystem
 
         [SerializeField] private GameObject _errorHud;
         [SerializeField] private TextMeshProUGUI _errorLabel;
+        [SerializeField] private float _errorAutoHideDiration = 3f;
 
         private string _errorText;
         private int _blockers = 0;
+        private Coroutine _errorHideCr;
 
         private void Awake()
         {
@@ -60,17 +64,30 @@ namespace InteractionSystem
             Instance._errorText = error;
             Instance._errorHud.SetActive(true);
             Instance._errorLabel.text = error;
+            
+            if (Instance._errorHideCr != null) 
+                Instance.StopCoroutine(Instance._errorHideCr);
+            Instance._errorHideCr = Instance.StartCoroutine(HideErrorCr());
+        }
+
+        private static IEnumerator HideErrorCr()
+        {
+            yield return new WaitForSeconds(Instance._errorAutoHideDiration);
+
+            HideError();
         }
 
         public static void HideInfo()
         {
-
             Instance._keyHud.SetActive(false);
         }
 
         public static void HideError()
         {
+            if (string.IsNullOrEmpty(Instance._errorText)) return;
+
             Instance._errorText = null;
+            Instance._errorHideCr = null;
             Instance._errorHud.SetActive(false);
         }
     }

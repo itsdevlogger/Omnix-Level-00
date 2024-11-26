@@ -7,6 +7,10 @@ namespace InteractionSystem
     {
         public bool TargetChanged { get; private set; }
         public InteractionTarget Target { get; private set; }
+        public int interactionLayer;
+        public int opaqueLayer;
+        public float range;
+
         private Vector3 _lastRayOrigin;
         private Quaternion _lastRayAngle;
 
@@ -22,6 +26,13 @@ namespace InteractionSystem
             }
         }
 
+        public RaycastHandler(int interactionLayer, int opaqueLayer, float range)
+        {
+            this.interactionLayer = interactionLayer;
+            this.opaqueLayer = opaqueLayer;
+            this.range = range;
+        }
+
         private bool NeedRayCast(Ray ray)
         {
             Quaternion angle = Quaternion.LookRotation(ray.direction);
@@ -35,7 +46,7 @@ namespace InteractionSystem
         }
 
         /// <returns> true if we hit a target, false otherwiese </returns>
-        public bool DoRaycast(float range, int layer, InteractionTarget currentTarget)
+        public bool DoRaycast(InteractionTarget currentTarget)
         {
             var ray = InteractionCamera.Instance.ScreenPointToRay(MousePosition);
             if (!NeedRayCast(ray))
@@ -45,8 +56,16 @@ namespace InteractionSystem
                 return Target != null;
             }
 
-            if (Physics.Raycast(ray, out RaycastHit raycastHit, range, layer))
+            if (Physics.Raycast(ray, out RaycastHit raycastHit, range, interactionLayer))
             {
+                // check if the view is blocked
+                if (Physics.Raycast(ray, raycastHit.distance, opaqueLayer))
+                {
+                    Target = null;
+                    TargetChanged = currentTarget != null;
+                    return false;
+                }
+
                 if (currentTarget != null && currentTarget.gameObject == raycastHit.collider.gameObject)
                 {
                     TargetChanged = false;
@@ -61,8 +80,9 @@ namespace InteractionSystem
                     return true;
                 }
             }
+
 #if UNITY_EDITOR
-            if (Physics.Raycast(ray, out raycastHit, range, ~layer))
+            if (InteractionPlayer.EditorOnlyLogIncorrectlySetupInteractions &&  Physics.Raycast(ray, out raycastHit, range, ~interactionLayer))
             {
                 var go = raycastHit.collider.gameObject;
                 if (go.TryGetComponent(out IInteractionCriteria _)
@@ -74,7 +94,7 @@ namespace InteractionSystem
             }
 #endif
 
-            TargetChanged = true;
+            TargetChanged = currentTarget != null;
             Target = null;
             return false;
         }

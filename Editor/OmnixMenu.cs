@@ -26,6 +26,7 @@ namespace Omnix.Editor
             public const string SORT_COMPONENTS = "Sort Components";
             public const string REPLACE_TEXT_WITH_TMP = "Replace Text with TextMeshProUgui";
             public const string INVERT_SELECTION = "Invert Selection";
+            public const string NORMALIZE_BOX_COLLIDER = "Normalize Box Collider";
         }
 
 
@@ -71,6 +72,8 @@ namespace Omnix.Editor
         [MenuItem(SELECT_MENU + _.INVERT_SELECTION, true)]
         [MenuItem(OBJECT_MENU + _.SORT_COMPONENTS, true)]
         [MenuItem(SELECT_MENU + _.SORT_COMPONENTS, true)]
+        [MenuItem(OBJECT_MENU + _.NORMALIZE_BOX_COLLIDER)]
+        [MenuItem(SELECT_MENU + _.NORMALIZE_BOX_COLLIDER)]
         public static bool IsAnythingSelected() => Selection.gameObjects.Length > 0;
 
 
@@ -188,6 +191,37 @@ namespace Omnix.Editor
         {
             ActiveEditorTracker.sharedTracker.isLocked = !ActiveEditorTracker.sharedTracker.isLocked;
             ActiveEditorTracker.sharedTracker.ForceRebuild();
+        }
+
+        [MenuItem(OBJECT_MENU + _.NORMALIZE_BOX_COLLIDER)]
+        [MenuItem(SELECT_MENU + _.NORMALIZE_BOX_COLLIDER)]
+        public static void NormalizeBoxCollider()
+        {
+            // Get all selected GameObjects
+            GameObject[] selectedObjects = Selection.gameObjects;
+
+            foreach (GameObject obj in selectedObjects)
+            {
+                // Ensure the GameObject has a BoxCollider
+                BoxCollider collider = obj.GetComponent<BoxCollider>();
+                if (collider == null)
+                {
+                    continue;
+                }
+
+                // Reset the GameObject's scale and position
+                Undo.RecordObject(obj.transform, "Adjust BoxCollider Transform");
+                var scale = obj.transform.localScale;
+                var pos = obj.transform.localPosition;
+                obj.transform.localScale = Vector3.one;
+                obj.transform.localPosition = Vector3.zero;
+
+                // Adjust the collider's size and center
+                Undo.RecordObject(collider, "Adjust BoxCollider");
+                var size = collider.size;
+                collider.size = Vector3.Scale(scale, size);
+                collider.center += pos;
+            }
         }
     }
 
