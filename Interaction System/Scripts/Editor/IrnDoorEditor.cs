@@ -15,6 +15,8 @@ public class IrnDoorEditor : Editor
     private SerializedProperty _copyRotationProp;
     private SerializedProperty _autocloseDelayProp;
     private SerializedProperty _isOpenProp;
+    private SerializedProperty _allowIntercept;
+    private SerializedProperty _interceptionCurve;
 
 
     private void OnEnable()
@@ -30,6 +32,8 @@ public class IrnDoorEditor : Editor
         
         _autocloseDelayProp = serializedObject.FindProperty("_autocloseDelay");
         _isOpenProp = serializedObject.FindProperty("_isOpen");
+        _allowIntercept = serializedObject.FindProperty("allowIntercept");
+        _interceptionCurve = serializedObject.FindProperty("interceptionCurve");
     }
 
 
@@ -88,6 +92,9 @@ public class IrnDoorEditor : Editor
             {
                 _autocloseDelayProp.floatValue = -1f;
             }
+            EditorGUILayout.PropertyField(_allowIntercept);
+            if (_allowIntercept.boolValue) 
+                EditorGUILayout.PropertyField(_interceptionCurve); 
             EditorGUI.indentLevel--;
         }
 

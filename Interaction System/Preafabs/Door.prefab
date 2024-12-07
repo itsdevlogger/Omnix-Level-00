@@ -87,6 +87,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cooldownTime: 6
   isRealTime: 0
+  __EDITOR_ONLY_MANGED_BY__: {fileID: 3429525132839756647}
 --- !u!114 &3429525132839756647
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -99,21 +100,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a57024819371b043a77d5fa0058ed71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _target: {fileID: 457127923970132226}
-  _openPosition: {fileID: 2581725927345660688}
-  _closePosition: {fileID: 5637419827523865474}
-  _animationCurve:
+  target: {fileID: 457127923970132226}
+  openPosition: {fileID: 2581725927345660688}
+  closePosition: {fileID: 5637419827523865474}
+  animationCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 0
-      outSlope: 0
+      inSlope: -0.108559124
+      outSlope: -0.108559124
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0
+      outWeight: 0.4562334
+    - serializedVersion: 3
+      time: 0.2
+      value: 0.05
+      inSlope: 0.59917885
+      outSlope: 0.59917885
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.8
+      value: 0.95
+      inSlope: 0.68489265
+      outSlope: 0.68489265
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
     - serializedVersion: 3
       time: 1
       value: 1
@@ -126,11 +145,12 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  _animationDuration: 2
+  animationDuration: 2
+  allowIntercept: 1
+  copyPosition: 0
+  copyRotation: 1
   _autocloseDelay: 2
   _isOpen: 0
-  _copyPosition: 0
-  _copyRotation: 1
 --- !u!1 &2982545036970941674
 GameObject:
   m_ObjectHideFlags: 0

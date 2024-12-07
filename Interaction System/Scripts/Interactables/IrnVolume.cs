@@ -15,6 +15,7 @@ namespace InteractionSystem.Interactables
             Interact
         }
 
+        [SerializeField] private GameObject _target;
         [SerializeField] private ActionToTake _action;
         [SerializeField] private bool _forceInteraction;
         [SerializeField] private bool _endWhenPlayerLeaves = true;
@@ -29,10 +30,10 @@ namespace InteractionSystem.Interactables
             switch (_action)
             {
                 case ActionToTake.Focus:
-                    _player.SetFocus(gameObject, _forceInteraction);
+                    _player.SetFocus(_target, _forceInteraction);
                     break;
                 case ActionToTake.Interact:
-                    _player.StartInteraction(gameObject, _forceInteraction);
+                    _player.StartInteraction(_target, _forceInteraction);
                     break;
             }
         }
@@ -42,7 +43,7 @@ namespace InteractionSystem.Interactables
             if (!_endWhenPlayerLeaves || _player == null)
                 return;
 
-            if (_player.IsInteracting == false || _player.CurrentTarget.gameObject != gameObject)
+            if (_player.IsInteracting == false || _player.CurrentTarget.gameObject != _target)
                 return;
 
             if (other.TryGetComponent(out InteractionPlayer otherPlayer) == false)
@@ -66,11 +67,12 @@ namespace InteractionSystem.Interactables
 #if UNITY_EDITOR
         private void Reset()
         {
-            if (!gameObject.TryGetComponent(out IInteractionProcessor processor))
-            {
-                EditorUtility.DisplayDialog("Error", $"Can't add \"{nameof(IrnVolume)}\" to game object \"{gameObject.name}\" as there are no interactable components.", "Okay");
-                DestroyImmediate(this);
-            }
+            _target = gameObject;
+            //if (!_target.TryGetComponent(out IInteractionProcessor processor))
+            //{
+            //    EditorUtility.DisplayDialog("Error", $"Can't add \"{nameof(IrnVolume)}\" to game object \"{_target.name}\" as there are no interactable components.", "Okay");
+            //    DestroyImmediate(this);
+            //}
         }
 #endif
     }

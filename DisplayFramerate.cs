@@ -2,30 +2,49 @@ using UnityEngine;
 
 public class DisplayFramerate : MonoBehaviour
 {
-    private float deltaTime = 0.0f;
+    private string _fpsText;
+    private string _versionText;
+    private float _deltaTime;
+    private int _framesCount;
+    private GUIStyle _style;
+    private int _lastKnownScreenHeight;
+
+    private void Awake()
+    {
+        _deltaTime = 0.0f;
+        _fpsText = $"FPS: 0";
+        _versionText = $"V: {Application.version}";
+    }
 
     void Update()
     {
-        // Calculate the time between frames
-        deltaTime += (Time.unscaledDeltaTime - deltaTime) * 0.1f;
+        _deltaTime += Time.unscaledDeltaTime;
+        _framesCount++;
+
+        if (_deltaTime > 0.1f)
+        {
+            _fpsText = $"FPS: {_framesCount * 10}";
+            _framesCount = 0;
+            _deltaTime = 0f;
+        }
     }
 
     void OnGUI()
     {
-        // Set up the style for the text
-        GUIStyle style = new GUIStyle();
-        int width = Screen.width, height = Screen.height;
+        int width = Screen.width;
+        int height = Screen.height;
 
-        Rect rect = new Rect(10, 10, width, height * 2 / 100);
-        style.alignment = TextAnchor.UpperLeft;
-        style.fontSize = height * 2 / 100; // Font size (2% of screen height)
-        style.normal.textColor = Color.white;
+        if (_style == null || height != _lastKnownScreenHeight) { 
+            _style = new GUIStyle();
+            _style.alignment = TextAnchor.LowerLeft;
+            _style.fontSize = height * 2 / 100;
+            _style.normal.textColor = Color.white;
+            _lastKnownScreenHeight = height;
+        }
 
-        // Calculate FPS and format the text
-        float fps = 1.0f / deltaTime;
-        string text = $"FPS: {fps:0.}";
-
-        // Draw the text on the screen
-        GUI.Label(rect, text, style);
+        Rect rect = new Rect(10, height * 0.94f, width, height * 0.02f);
+        GUI.Label(rect, _fpsText, _style);
+        rect.y += rect.height;
+        GUI.Label(rect, _versionText, _style);
     }
 }

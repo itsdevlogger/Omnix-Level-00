@@ -5,6 +5,8 @@ namespace InteractionSystem
 {
     public class InteractionPlayer : MonoBehaviour
     {
+        public static InteractionPlayer Instance { get; private set; }
+
         [Header("Settings")]
         [SerializeField] private LayerMask _interactableLayer;
         [SerializeField, Tooltip("Player wont be able to interact with the object if the interactable is masked by an object on Opaque Layer.")] 
@@ -30,10 +32,15 @@ namespace InteractionSystem
         public static bool EditorOnlyLogIncorrectlySetupInteractions;
 #endif
 
-
+        private void Awake()
+        {
+            Instance = this;
+        }
         private void OnEnable()
         {
+#if UNITY_EDITOR
             EditorOnlyLogIncorrectlySetupInteractions = editorOnlyLogIncorrectlySetupInteractions;
+#endif
             _raycastHandler = new RaycastHandler(_interactableLayer, _opaqueLayer, InteractionStartRange);
             _startInteractionAction.Enable();
             _endInteractionAction.Enable();
