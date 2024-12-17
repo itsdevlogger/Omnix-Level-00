@@ -6,15 +6,15 @@ using UnityEngine;
 namespace InteractionSystem.Interactables
 {
     /// <summary>
-    /// Tells <see cref="IrnTrigger"/> to ignore this component.
+    /// Tells <see cref="IrnButton"/> to ignore this component.
     /// </summary>
-    public interface IHiddenForTrigger
+    public interface IHideForButton
     {
 
     }
 
     [RequireComponent(typeof(Collider))]
-    public class IrnTrigger : FeedbackDisplayInfo, IInteractionCriteria, IInteractionProcessor
+    public class IrnButton : FidDisplayInfo, IInteractionCriteria, IInteractionProcessor
     {
         [SerializeField] private GameObject[] _targets;
         private InteractionTarget _target;
@@ -30,13 +30,13 @@ namespace InteractionSystem.Interactables
             }
             else
             {
-                Debug.LogError($"Did not find any interactable to brodcast to: {nameof(IrnTrigger)} component on {gameObject.name}.", gameObject);
+                Debug.LogError($"Did not find any interactable to brodcast to: {nameof(IrnButton)} component on {gameObject.name}.", gameObject);
             }
         }
 
         private void RemoveIgnored<T>(IEnumerable<T> target)
         {
-            ((List<T>)target).RemoveAll(c => c is IHiddenForTrigger);
+            ((List<T>)target).RemoveAll(c => c is IHideForButton);
         }
 
         bool IInteractionCriteria.CanInteract(InteractionPlayer player)

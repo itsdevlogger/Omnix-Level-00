@@ -1,14 +1,12 @@
 using System.Collections;
 using UnityEngine;
-using System;
-
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
 namespace InteractionSystem.Interactables
 {
-    [RequireComponent(typeof(IrnCooldown))]
+    [RequireComponent(typeof(CriCooldownTimer))]
     public class IrnDoor : MonoBehaviour, IInteractionProcessor
     {
         private delegate void ActionFrameSetter(float time, Vector3 startPosition, Vector3 endPosition, Quaternion startRotation, Quaternion endRotation);
@@ -31,7 +29,7 @@ namespace InteractionSystem.Interactables
         [SerializeField] private bool _isOpen = false;
 
         private Coroutine _currentAnimation;
-        private IrnCooldown _cooldown;
+        private CriCooldownTimer _cooldown;
 
         public bool IsAutoclose => _autocloseDelay >= 0;
 
@@ -57,7 +55,7 @@ namespace InteractionSystem.Interactables
 
         private void Start()
         {
-            _cooldown = GetComponent<IrnCooldown>();
+            _cooldown = GetComponent<CriCooldownTimer>();
             AnimationDuration = animationDuration;
 
             // Set initial state
@@ -76,14 +74,14 @@ namespace InteractionSystem.Interactables
             openPosition.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
             closePosition.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
 
-            _cooldown = GetComponent<IrnCooldown>();
+            _cooldown = GetComponent<CriCooldownTimer>();
             _cooldown.__EDITOR_ONLY_MANGED_BY__ = this;
         }
 
         private void OnValidate()
         {
             if (_cooldown ==  null) 
-                _cooldown = GetComponent<IrnCooldown>();
+                _cooldown = GetComponent<CriCooldownTimer>();
             
             _cooldown.__EDITOR_ONLY_MANGED_BY__ = this;
             UpdateCooldown();

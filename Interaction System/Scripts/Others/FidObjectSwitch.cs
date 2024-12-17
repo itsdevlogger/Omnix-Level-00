@@ -2,7 +2,7 @@
 
 namespace InteractionSystem.Feedbacks
 {
-    public class FeedbackObjectSwitch : MonoBehaviour, IInteractionFeedback
+    public class FidObjectSwitch : MonoBehaviour, IInteractionFeedback
     {
         [SerializeField] private GameObject defaultObject;
         [SerializeField] private GameObject focusObject;

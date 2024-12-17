@@ -1,5 +1,8 @@
 namespace InteractionSystem
 {
+    /// <summary>
+    /// Use prefix `Cri` for the classes that implements it.
+    /// </summary>
     public interface IInteractionCriteria
     {
         /// <summary> 
@@ -9,6 +12,9 @@ namespace InteractionSystem
         bool CanInteract(InteractionPlayer player);
     }
 
+    /// <summary>
+    /// Use prefix `Fid` for the classes that implements it.
+    /// </summary>
     public interface IInteractionFeedback
     {
         /// <summary> 
@@ -31,6 +37,9 @@ namespace InteractionSystem
         void OnFocusLost(InteractionPlayer player);
     }
 
+    /// <summary>
+    /// Use prefix `Irn` for the classes that implements it.
+    /// </summary>
     public interface IInteractionProcessor
     {
         /// <summary> 

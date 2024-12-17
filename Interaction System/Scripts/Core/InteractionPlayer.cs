@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace InteractionSystem
@@ -26,27 +27,33 @@ namespace InteractionSystem
         public InteractionTarget CurrentTarget { get; private set; }
         public bool IsInteracting { get; private set; } = false;
         public bool IsFocused { get; private set; } = false;
+        public bool CanInteract
+        {
+            get => enabled;
+            set => enabled = value;
+        }
+
+        private HashSet<string> _ownedItems = new HashSet<string>();
 
 #if UNITY_EDITOR
         public bool editorOnlyLogIncorrectlySetupInteractions = true;
         public static bool EditorOnlyLogIncorrectlySetupInteractions;
+
+        private void OnEnable()
+        {
+            EditorOnlyLogIncorrectlySetupInteractions = editorOnlyLogIncorrectlySetupInteractions;
+        }
 #endif
 
         private void Awake()
         {
             Instance = this;
-        }
-        private void OnEnable()
-        {
-#if UNITY_EDITOR
-            EditorOnlyLogIncorrectlySetupInteractions = editorOnlyLogIncorrectlySetupInteractions;
-#endif
             _raycastHandler = new RaycastHandler(_interactableLayer, _opaqueLayer, InteractionStartRange);
             _startInteractionAction.Enable();
             _endInteractionAction.Enable();
         }
 
-        private void OnDisable()
+        private void OnDestroy()
         {
             _startInteractionAction.Disable();
             _endInteractionAction.Disable();
@@ -98,7 +105,6 @@ namespace InteractionSystem
             CurrentTarget.GainFocus(this);
         }
 
-
         /// <summary>
         /// Focus on the given interactable gameObject
         /// </summary>
@@ -138,8 +144,8 @@ namespace InteractionSystem
         /// </summary>
         public void StartInteraction()
         {
-            if (CurrentTarget == null || IsFocused == false) 
-                return;
+            if (CanInteract == false) return;
+            if (CurrentTarget == null || IsFocused == false) return;
 
             IsInteracting = true; // Must be set before calling StartInteraction, incase Interaction immedietly ends
             CurrentTarget.StartInteraction(this);
@@ -152,6 +158,7 @@ namespace InteractionSystem
         /// <param name="force"> Should we force start interaction even if the <see cref="IInteractable.CanInteract(InteractionPlayer)"/> returns false? </param>
         public bool StartInteraction(GameObject target, bool force = false)
         {
+            if (CanInteract == false) return false;
             if (SetFocus(target, force))
             {
                 IsInteracting = true;
@@ -173,6 +180,21 @@ namespace InteractionSystem
             IsInteracting = false;
             CurrentTarget.EndInteraction(this);
             ClearFocus();
+        }
+
+        public void AddToOwnedItems(string id)
+        {
+            _ownedItems.Add(id);
+        }
+
+        public void RemoveFromOwnedItems(string id)
+        {
+            _ownedItems.Remove(id);
+        }
+
+        public bool DoesOwnsItem(string id)
+        {
+            return _ownedItems.Contains(id);
         }
     }
 }

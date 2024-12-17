@@ -44,8 +44,8 @@ public class InteractionSetupWindow : EditorWindow
         if (!gameObject.TryGetComponent(out Collider _))
             gameObject.AddComponent<BoxCollider>().isTrigger = true;
 
-        if (!gameObject.TryGetComponent(out FeedbackDisplayInfo _))
-            gameObject.AddComponent<FeedbackDisplayInfo>();
+        if (!gameObject.TryGetComponent(out FidDisplayInfo _))
+            gameObject.AddComponent<FidDisplayInfo>();
 
         RecursiveSetLayer(gameObject.transform, 7);
         EditorUtility.SetDirty(gameObject.transform);

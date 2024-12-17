@@ -6,7 +6,7 @@ using UnityEditor;
 namespace InteractionSystem.Interactables
 {
     [ComponentInfo("Blocks interaction for specified amount of time after previous interaction ends.")]
-    public class IrnCooldown : MonoBehaviour, IInteractionProcessor, IInteractionCriteria
+    public class CriCooldownTimer : MonoBehaviour, IInteractionProcessor, IInteractionCriteria
     {
         public float cooldownTime;
         public bool isRealTime;
@@ -47,12 +47,12 @@ namespace InteractionSystem.Interactables
     }
 
 #if UNITY_EDITOR
-    [CustomEditor(typeof(IrnCooldown))]
+    [CustomEditor(typeof(CriCooldownTimer))]
     public class IrnCooldownEditor : Editor
     {
         public override void OnInspectorGUI()
         {
-            IrnCooldown cooldown = ((IrnCooldown)target);
+            CriCooldownTimer cooldown = ((CriCooldownTimer)target);
             bool isManaged = cooldown.__EDITOR_ONLY_MANGED_BY__ != null;
             if (isManaged) 
             {

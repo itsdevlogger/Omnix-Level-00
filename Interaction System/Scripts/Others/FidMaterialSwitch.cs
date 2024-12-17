@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace InteractionSystem.Feedbacks
 {
-    public class FeedbackMaterialSwitch : MonoBehaviour, IInteractionFeedback
+    public class FidMaterialSwitch : MonoBehaviour, IInteractionFeedback
     {
         [System.Serializable]
         public class RendererMaterialSettings
@@ -13,8 +13,9 @@ namespace InteractionSystem.Feedbacks
             [NonSerialized] public Material defaultMaterial;
         }
 
-        [SerializeField] private Renderer[] _renderers;
         [SerializeField] private Material _focusMaterial;
+        [SerializeField] private Renderer[] _renderers;
+        [Space]
         [SerializeField] private RendererMaterialSettings[] _specialCases;
         private Material _defaultMaterial;
 

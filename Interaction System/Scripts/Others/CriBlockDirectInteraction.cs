@@ -3,7 +3,7 @@
 namespace InteractionSystem.Interactables
 {
     [ComponentInfo("Stops player from directy interacting with this object.\nForcing them to use some IrnButton that links to this object.")]
-    public class BlockDirectIrn : MonoBehaviour, IInteractionCriteria, IHiddenForTrigger
+    public class CriBlockDirectInteraction : MonoBehaviour, IInteractionCriteria, IHideForButton
     {
         public bool isBlocked = true;
         public string errorMessage;

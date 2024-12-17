@@ -7,7 +7,7 @@ namespace InteractionSystem.Interactables
 {
     [RequireComponent(typeof(Collider))]
     [ComponentInfo("Starts the interaction as soon as player enters the\nvolume defined by trigger on this object")]
-    public class IrnVolume : MonoBehaviour
+    public class IrnVolumeTrigger : MonoBehaviour
     {
         public enum ActionToTake
         {
