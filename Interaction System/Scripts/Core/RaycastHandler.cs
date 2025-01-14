@@ -87,7 +87,7 @@ namespace InteractionSystem
                 var go = raycastHit.collider.gameObject;
                 if (go.TryGetComponent(out IInteractionCriteria _)
                     || go.TryGetComponent(out IInteractionFeedback _)
-                    || go.TryGetComponent(out IInteractionProcessor _))
+                    || go.TryGetComponent(out IInteractable _))
                 {
                     Debug.LogError($"Interactable \"{go.name}\" dont have Interactable Layer and will not be detected.");
                 }

@@ -6,7 +6,7 @@ using UnityEditor;
 namespace InteractionSystem.Interactables
 {
     [ComponentInfo("Blocks interaction for specified amount of time after previous interaction ends.")]
-    public class CriCooldownTimer : MonoBehaviour, IInteractionProcessor, IInteractionCriteria
+    public class CriCooldownTimer : MonoBehaviour, IInteractable, IInteractionCriteria
     {
         public float cooldownTime;
         public bool isRealTime;

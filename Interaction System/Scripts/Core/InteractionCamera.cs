@@ -2,6 +2,7 @@
 
 namespace InteractionSystem
 {
+    [RequireComponent(typeof(Camera))]
     public class InteractionCamera : MonoBehaviour
     {
         public static Camera Instance { get; private set; }

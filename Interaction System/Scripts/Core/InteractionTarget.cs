@@ -17,7 +17,7 @@ namespace InteractionSystem
         public readonly Transform transform;
         public readonly IEnumerable<IInteractionCriteria> checks;
         public readonly IEnumerable<IInteractionFeedback> feedbacks;
-        public readonly IEnumerable<IInteractionProcessor> handlers;
+        public readonly IEnumerable<IInteractable> handlers;
         public bool invokeEvents;
         
         private HashSet<IInteractionCriteria> _readyToInteract;
@@ -29,7 +29,7 @@ namespace InteractionSystem
             GameObject gameObject,
             IEnumerable<IInteractionCriteria> checks,
             IEnumerable<IInteractionFeedback> feedbacks,
-            IEnumerable<IInteractionProcessor> handlers,
+            IEnumerable<IInteractable> handlers,
             bool invokeEvents = true
             )
         {
@@ -148,7 +148,7 @@ namespace InteractionSystem
                 return false;
             }
 
-            var h = target.GetComponents<IInteractionProcessor>();
+            var h = target.GetComponents<IInteractable>();
             if (h.Length == 0)
             {
 #if UNITY_EDITOR
@@ -156,8 +156,8 @@ namespace InteractionSystem
                 {
                     var checks = target.GetComponents<IInteractionCriteria>();
                     var feedbacks = target.GetComponents<IInteractionFeedback>();
-                    if (checks.Length > 0) Debug.LogError($"Game Object \"{target.name}\" has \"{nameof(IInteractionCriteria)}\" but no \"{nameof(IInteractionProcessor)}\". The object will be ignored.");
-                    if (feedbacks.Length > 0) Debug.LogError($"Game Object \"{target.name}\" has \"{nameof(IInteractionFeedback)}\" but no \"{nameof(IInteractionProcessor)}\". The object will be ignored.");
+                    if (checks.Length > 0) Debug.LogError($"Game Object \"{target.name}\" has \"{nameof(IInteractionCriteria)}\" but no \"{nameof(IInteractable)}\". The object will be ignored.");
+                    if (feedbacks.Length > 0) Debug.LogError($"Game Object \"{target.name}\" has \"{nameof(IInteractionFeedback)}\" but no \"{nameof(IInteractable)}\". The object will be ignored.");
                 }
 #endif
                 interactionTarget = null;
@@ -174,7 +174,7 @@ namespace InteractionSystem
         {
             var checks = new List<IInteractionCriteria>();
             var feedbacks = new List<IInteractionFeedback>();
-            var handlers = new List<IInteractionProcessor>();
+            var handlers = new List<IInteractable>();
             GameObject mainTarget = null;
 
             foreach (var target in targets)
@@ -184,7 +184,7 @@ namespace InteractionSystem
                 if (mainTarget == null) mainTarget = target;
                 checks.AddRange(target.GetComponents<IInteractionCriteria>());
                 feedbacks.AddRange(target.GetComponents<IInteractionFeedback>());
-                handlers.AddRange(target.GetComponents<IInteractionProcessor>());
+                handlers.AddRange(target.GetComponents<IInteractable>());
             }
 
             if (mainTarget == null || handlers.Count == 0)
@@ -195,8 +195,8 @@ namespace InteractionSystem
                     stringBuilder.Append("\n - " + target.name);
                 }
                 var targs = stringBuilder.ToString();
-                if (checks.Count > 0) Debug.LogError($"Given Game Objects have \"{nameof(IInteractionCriteria)}\" but no \"{nameof(IInteractionProcessor)}\". The objects will be ignored.\nObjects:{targs}");
-                if (feedbacks.Count > 0) Debug.LogError($"Game Objects {mainTarget} has {nameof(IInteractionFeedback)} but no {nameof(IInteractionProcessor)}. The object will be ignored.\nObjects:{targs}");
+                if (checks.Count > 0) Debug.LogError($"Given Game Objects have \"{nameof(IInteractionCriteria)}\" but no \"{nameof(IInteractable)}\". The objects will be ignored.\nObjects:{targs}");
+                if (feedbacks.Count > 0) Debug.LogError($"Game Objects {mainTarget} has {nameof(IInteractionFeedback)} but no {nameof(IInteractable)}. The object will be ignored.\nObjects:{targs}");
                 interactionTarget = null;
                 return false;
             }

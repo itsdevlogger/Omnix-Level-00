@@ -7,7 +7,7 @@ using UnityEditor;
 namespace InteractionSystem.Interactables
 {
     [RequireComponent(typeof(CriCooldownTimer))]
-    public class IrnDoor : MonoBehaviour, IInteractionProcessor
+    public class IrnDoor : MonoBehaviour, IInteractable
     {
         private delegate void ActionFrameSetter(float time, Vector3 startPosition, Vector3 endPosition, Quaternion startRotation, Quaternion endRotation);
 

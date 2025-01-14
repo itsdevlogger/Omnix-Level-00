@@ -1,7 +1,7 @@
 using UnityEngine;
 namespace InteractionSystem.Interactables
 {
-    public class IrnItem : MonoBehaviour, IInteractionProcessor
+    public class IrnItem : MonoBehaviour, IInteractable
     {
         public enum Operation
         {
@@ -15,12 +15,12 @@ namespace InteractionSystem.Interactables
 
         public string ID => _id;
 
-        void IInteractionProcessor.OnInteractionEnd(InteractionPlayer player)
+        void IInteractable.OnInteractionEnd(InteractionPlayer player)
         {
             
         }
 
-        void IInteractionProcessor.OnInteractionStart(InteractionPlayer player)
+        void IInteractable.OnInteractionStart(InteractionPlayer player)
         {
             switch (_operation)
             {

@@ -14,7 +14,7 @@ namespace InteractionSystem.Interactables
     }
 
     [RequireComponent(typeof(Collider))]
-    public class IrnButton : FidDisplayInfo, IInteractionCriteria, IInteractionProcessor
+    public class IrnButton : FidDisplayInfo, IInteractionCriteria, IInteractable
     {
         [SerializeField] private GameObject[] _targets;
         private InteractionTarget _target;
@@ -44,13 +44,13 @@ namespace InteractionSystem.Interactables
             return _target.CanInteract(player);
         }
 
-        void IInteractionProcessor.OnInteractionStart(InteractionPlayer player)
+        void IInteractable.OnInteractionStart(InteractionPlayer player)
         {
             // Dont change order of operations in this method
             _target.StartInteraction(player);
         }
 
-        void IInteractionProcessor.OnInteractionEnd(InteractionPlayer player)
+        void IInteractable.OnInteractionEnd(InteractionPlayer player)
         {
             _target.EndInteraction(player);
         }
@@ -94,11 +94,11 @@ namespace InteractionSystem.Interactables
                 list.Add(feedback);
         }
 
-        public void RegisterHandler(IInteractionProcessor handler)
+        public void RegisterHandler(IInteractable handler)
         {
             if (handler == null) return;
 
-            var list = (List<IInteractionProcessor>)_target.feedbacks;
+            var list = (List<IInteractable>)_target.feedbacks;
             if (!list.Contains(handler))
                 list.Add(handler);
         }
@@ -119,11 +119,11 @@ namespace InteractionSystem.Interactables
             list.Remove(feedback);
         }
 
-        public void UnregisterHandler(IInteractionProcessor handler)
+        public void UnregisterHandler(IInteractable handler)
         {
             if (handler == null) return;
 
-            var list = (List<IInteractionProcessor>)_target.feedbacks;
+            var list = (List<IInteractable>)_target.feedbacks;
             list.Remove(handler);
         }
     }

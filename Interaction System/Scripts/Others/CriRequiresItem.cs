@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 namespace InteractionSystem.Interactables
 {
-    public class CriHasItem : MonoBehaviour, IInteractionCriteria
+    public class CriRequiresItem : MonoBehaviour, IInteractionCriteria
     {
-        [SerializeField, Tooltip("If direct referance is possible, use this")] private IrnItem _key;
-        [SerializeField, Tooltip("If direct referance is not possible, use this")] private string _keyId;
+        [SerializeField, Tooltip("If direct reference is possible, use this")] private IrnItem _key;
+        [SerializeField, Tooltip("If direct reference is not possible, use this")] private string _keyId;
         [SerializeField] private string _errorMessage;
 
         private string KeyID

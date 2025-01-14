@@ -6,8 +6,10 @@ using System.Text;
 [InitializeOnLoad]
 public class InteractionSetupChecker : MonoBehaviour
 {
-    private static Texture ERROR_ICON = EditorGUIUtility.FindTexture("console.erroricon");
-    private static int InteractionLayer = LayerMask.NameToLayer("Interactable");
+    private static readonly Texture ERROR_ICON = EditorGUIUtility.FindTexture("console.erroricon");
+    public static readonly int PRIMARY_LAYER = LayerMask.NameToLayer("Interactable"); // This must be a single layer
+    public static readonly int INTERACTION_LAYER_MASK = LayerMask.NameToLayer("Interactable"); // This can be a LayerMask or a single layer
+    
     static InteractionSetupChecker()
     {
         EditorApplication.hierarchyWindowItemOnGUI += HierarchyWindowItemOnGUI;
@@ -32,7 +34,7 @@ public class InteractionSetupChecker : MonoBehaviour
         StringBuilder builder;
         bool needLog = false;
 
-        if (go.GetComponent<IInteractionProcessor>() != null)
+        if (go.GetComponent<IInteractable>() != null)
         {
             builder = new StringBuilder();
             builder.AppendLine("Interactable is not poperly setup:");
@@ -56,7 +58,7 @@ public class InteractionSetupChecker : MonoBehaviour
             needLog = true;
         }
 
-        if (go.layer != InteractionLayer)
+        if ((INTERACTION_LAYER_MASK & (1 << go.layer)) != 0)
         {
             builder.AppendLine($"  - Wrong Layer.");
             needLog = true;
