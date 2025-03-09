@@ -47,7 +47,7 @@ namespace UltimateSaveSystem
         private void GetAllComponents()
         {
             if (gameObject == null) return;
-            
+
             int savedIndex = 0;
             _components = new List<ComponentInfo>();
             foreach (Component component in gameObject.GetComponents<Component>())
@@ -60,7 +60,7 @@ namespace UltimateSaveSystem
                 }
             }
         }
-        
+
         private string GetComponentGuid(ComponentInfo component) => $"{_guid}|[{component.SavedIndex}]";
 
         private void Save()
@@ -101,13 +101,13 @@ namespace UltimateSaveSystem
                 var typeHolder = TypesLibrary.GetFields(componentInfo.Component.GetType());
                 foreach (FieldInfo fieldInfo in typeHolder.localFields)
                 {
-                    if (data.TryGetValue(fieldInfo.Name, out object value)) 
+                    if (data.TryGetValue(fieldInfo.Name, out object value))
                         SetFieldValue(componentInfo.Component, fieldInfo, value);
                 }
 
                 foreach ((string fieldID, FieldInfo fieldInfo) in typeHolder.globalFields)
                 {
-                    if (USSManager.TryGetGlobalValue(fieldID, out object value)) 
+                    if (USSManager.TryGetGlobalValue(fieldID, out object value))
                         SetFieldValue(componentInfo.Component, fieldInfo, value);
                 }
             }

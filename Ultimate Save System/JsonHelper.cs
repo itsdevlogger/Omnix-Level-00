@@ -1,4 +1,5 @@
 ﻿using System;
+using Codice.CM.Common.Serialization.Replication;
 using Newtonsoft.Json;
 using UnityEngine;
 

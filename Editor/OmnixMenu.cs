@@ -72,8 +72,8 @@ namespace Omnix.Editor
         [MenuItem(SELECT_MENU + _.INVERT_SELECTION, true)]
         [MenuItem(OBJECT_MENU + _.SORT_COMPONENTS, true)]
         [MenuItem(SELECT_MENU + _.SORT_COMPONENTS, true)]
-        [MenuItem(OBJECT_MENU + _.NORMALIZE_BOX_COLLIDER)]
-        [MenuItem(SELECT_MENU + _.NORMALIZE_BOX_COLLIDER)]
+        [MenuItem(OBJECT_MENU + _.NORMALIZE_BOX_COLLIDER, true)]
+        [MenuItem(SELECT_MENU + _.NORMALIZE_BOX_COLLIDER, true)]
         public static bool IsAnythingSelected() => Selection.gameObjects.Length > 0;
 
 
@@ -119,7 +119,7 @@ namespace Omnix.Editor
             }
 
             int newSelCount = 0;
-            foreach (GameObject obj in Object.FindObjectsOfType<GameObject>(true))
+            foreach (GameObject obj in Object.FindObjectsByType<GameObject>(FindObjectsInactive.Include, FindObjectsSortMode.None))
             {
                 if (!oldSelection.Contains(obj))
                 {
@@ -129,7 +129,7 @@ namespace Omnix.Editor
 
             Object[] newSelection = new Object[newSelCount];
             newSelCount = 0;
-            foreach (GameObject obj in Object.FindObjectsOfType<GameObject>(true))
+            foreach (GameObject obj in Object.FindObjectsByType<GameObject>(FindObjectsInactive.Include, FindObjectsSortMode.None))
             {
                 if (!oldSelection.Contains(obj))
                 {
@@ -404,7 +404,7 @@ namespace Omnix.Editor
             tmp.richText = textInfo.richText;
             tmp.enableAutoSizing = textInfo.enableAutoSizing;
             tmp.alignment = textInfo.textAlignOption;
-            tmp.enableWordWrapping = textInfo.enableWordWrapping;
+            tmp.textWrappingMode = TextWrappingModes.Normal;
             tmp.overflowMode = textInfo.overflowMode;
             tmp.text = textInfo.text;
             tmp.color = textInfo.color;

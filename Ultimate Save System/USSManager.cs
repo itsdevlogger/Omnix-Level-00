@@ -2,40 +2,37 @@
 using System.IO;
 using UnityEngine;
 using System.Collections.Generic;
-using UnityEngine.SceneManagement;
 
 namespace UltimateSaveSystem
 {
     public class USSManager : MonoBehaviour
     {
-        private static string SAVE_PATH;
-        private static USSManager _instance;
+        public static USSManager Instance { get; private set; }
         public static event Action OnSave;
-
-        public static USSManager Instance
+        private static string _savePath;
+        private static string SavePath
         {
             get
             {
-                if (_instance == null)
-                    _instance = new GameObject("[USS Manager]").AddComponent<USSManager>();
-                return _instance;
+                if (string.IsNullOrEmpty(_savePath))
+                    _savePath = Path.Combine(Application.persistentDataPath, "Save");
+                return _savePath;
             }
         }
 
         [SerializeField] private string _profile;
         private GameData _gameData;
-        
 
         private void Awake()
         {
-            if (_instance != null && _instance != this)
+            Debug.Log("Creating USS Manager");
+            if (Instance != null && Instance != this)
             {
                 Destroy(gameObject);
             }
             else
             {
-                SAVE_PATH = Application.persistentDataPath;
-                _instance = this;
+                Instance = this;
                 LoadProfile(_profile);
                 DontDestroyOnLoad(gameObject);
             }
@@ -43,7 +40,7 @@ namespace UltimateSaveSystem
 
         private void OnDestroy()
         {
-            if (_instance == this)
+            if (Instance == this)
                 SaveProfile(_profile);
         }
 
@@ -53,45 +50,51 @@ namespace UltimateSaveSystem
             SaveProfile(_profile);
         }
 
+        [ContextMenu("Delete All Profiles")]
+        private void DeleteAllProfiles()
+        {
+            
+        }
+
         public static void SaveProfile(string profile)
         {
             OnSave?.Invoke();
 
-            if (Directory.Exists(SAVE_PATH) == false)
-                Directory.CreateDirectory(SAVE_PATH);
+            if (Directory.Exists(SavePath) == false)
+                Directory.CreateDirectory(SavePath);
 
             if (string.IsNullOrEmpty(profile))
                 profile = DateTime.Now.ToString("yyyyMMdd HHmmss");
 
-            string path = Path.Join(SAVE_PATH, $"{profile}.bin");
+            string path = Path.Join(SavePath, $"{profile}.bin");
             string data = Instance._gameData.Serialize();
             File.WriteAllText(path, data);
-            _instance._profile = profile;
+            Instance._profile = profile;
         }
 
         public static void LoadProfile(string profile)
         {
-            if (Directory.Exists(SAVE_PATH) == false)
-                Directory.CreateDirectory(SAVE_PATH);
+            if (Directory.Exists(SavePath) == false)
+                Directory.CreateDirectory(SavePath);
 
             if (string.IsNullOrEmpty(profile))
             {
                 Instance._gameData = new GameData();
-                _instance._profile = profile;
+                Instance._profile = profile;
                 return;
             }
 
-            string path = Path.Join(SAVE_PATH, $"{profile}.bin");
+            string path = Path.Join(SavePath, $"{profile}.bin");
             if (File.Exists(path))
             {
                 string data = File.ReadAllText(path);
                 Instance._gameData = data.Deserialize<GameData>();
-                _instance._profile = profile;
+                Instance._profile = profile;
             }
             else
             {
                 Instance._gameData = new GameData();
-                _instance._profile = profile;
+                Instance._profile = profile;
             }
         }
 
@@ -100,17 +103,34 @@ namespace UltimateSaveSystem
             return Instance._gameData.globalFields.TryGetValue(id, out value);
         }
 
+        public static void UpdateGlobal(string id, object value)
+        {
+            if (!Instance._gameData.globalFields.TryGetValue(id, out object currentValue)) 
+                Instance._gameData.globalFields.Add(id, value);
+            else if (ValidateType(value, currentValue))
+                Instance._gameData.globalFields[id] = value;
+            else
+                Debug.LogError($"Type Mismatch for field (id:{id}): (type: {currentValue.GetType().FullName}) != (type: {value.GetType().FullName}).");
+            return;
+            
+            bool ValidateType(object obj1, object obj2)
+            {
+                if (obj1 == null || obj2 == null) return true;
+                var obj1Type = obj1.GetType();
+                var obj2Type = obj2.GetType();
+                if (obj1Type == obj2Type) return true;
+                if (obj1Type == typeof(int))
+                    return obj2Type == typeof(long) || obj2Type == typeof(short);
+                if (obj1Type == typeof(float))
+                    return obj2Type == typeof(double) || obj2Type == typeof(decimal);
+                return false;
+            }
+        }
+        
         public static void UpdateGlobals(Dictionary<string,object> globals)
         {
-            foreach ((string fieldId, object fieldValue) in globals)
-            {
-                if (!Instance._gameData.globalFields.TryGetValue(fieldId, out object currentValue)) 
-                    Instance._gameData.globalFields.Add(fieldId, fieldValue);
-                else if (fieldValue == null || currentValue == null || fieldValue.GetType() == currentValue.GetType())
-                    Instance._gameData.globalFields[fieldId] = fieldValue;
-                else
-                    Debug.LogError($"Type Mismatch for field (id:{fieldId}): (type: {currentValue.GetType().FullName}) != (type: {fieldValue.GetType().FullName}).");
-            }   
+            foreach ((string fieldId, object fieldValue) in globals) 
+                UpdateGlobal(fieldId, fieldValue);
         }
         
         public static Dictionary<string, object> GetObjectData(string guid)

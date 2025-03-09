@@ -46,5 +46,11 @@ namespace ThemedUi
         }
 
         protected abstract void Init();
+
+        protected void Save()
+        {
+            EditorUtility.SetDirty(this);
+            AssetDatabase.SaveAssetIfDirty(this);
+        }
     }
 }
